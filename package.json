@@ -1,0 +1,44 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll",
+    "devtools": "react-devtools"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@expo/samples": "3.0.3",
+    "@expo/vector-icons": "^10.0.6",
+    "AsyncStorage": "^0.1.5",
+    "expo": "^33.0.7",
+    "libxmljs": "^0.19.7",
+    "link": "^0.1.5",
+    "mysql": "^2.17.1",
+    "native-base": "^2.12.1",
+    "react": "16.8.6",
+    "react-devtools": "^3.6.1",
+    "react-native": "0.59.10",
+    "react-native-banner-carousel": "^1.0.3",
+    "react-native-cards": "^1.1.4",
+    "react-native-easy-grid": "^0.2.2",
+    "react-native-elements": "^1.1.0",
+    "react-native-fontawesome": "^6.0.1",
+    "react-native-image-carousel": "^0.4.6",
+    "react-native-material-cards": "^1.0.9",
+    "react-native-search-filter": "^0.1.5",
+    "react-native-snap-carousel": "^3.8.0",
+    "react-navigation": "^3.11.0",
+    "rn-fetch-blob": "^0.11.2"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.2.0",
+    "jest-expo": "^33.0.2",
+    "react-native-bpk-component-section-list": "^3.1.9"
+  },
+  "private": true
+}

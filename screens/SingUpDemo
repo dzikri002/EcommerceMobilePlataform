@@ -1,0 +1,379 @@
+/**
+ * This is the Signup Page
+ **/
+
+// React native and others libraries imports
+import React, { Component } from "react";
+import { ScrollView, StyleSheet, Alert, AppRegistry } from "react-native";
+
+import {
+  Container,
+  View,
+  Left,
+  Right,
+  Button,
+  Icon,
+  Item,
+  Input,
+  Text,
+  Grid,
+  Col
+} from "native-base";
+
+// Our custom files and classes import
+
+import Navbar from "../components/NavbarHeader";
+
+// create a component
+class SignUp extends Component {
+  static navigationOptions = {
+    header: null,
+    title: "SignUp"
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      UserName: "",
+      UserLastName: "",
+      UserEmail: "",
+      UserPassword: "",
+      UserRePassword: "",
+      hasError: false,
+      errorText: ""
+    };
+  }
+
+  // Metodos de validacion del render
+
+  signup() {
+    if (
+      this.state.UserName === "" ||
+      this.state.UserLastName === "" ||
+      this.state.UserEmail === "" ||
+      this.state.UserPassword === "" ||
+      this.state.UserRePassword === ""
+    ) {
+      this.setState({
+        hasError: true,
+        errorText: "Porfavor llenar todos los campos !"
+      });
+      return;
+    }
+    if (!this.verifyEmail(this.state.UserEmail)) {
+      this.setState({
+        hasError: true,
+        errorText: "Porfavor entre correo correcto !"
+      });
+      return;
+    }
+    if (this.state.UserName.length < 3) {
+      this.setState({
+        hasError: true,
+        errorText: "UserName must contains at least 3 characters !"
+      });
+      return;
+    }
+    if (this.state.UserPassword.length < 6) {
+      this.setState({
+        hasError: true,
+        errorText: "Passwords must contains at least 6 characters !"
+      });
+      return;
+    }
+    if (this.state.UserPassword !== this.state.UserRePassword) {
+      this.setState({
+        hasError: true,
+        errorText: "Passwords does not match !"
+      });
+      return;
+    }
+    this.setState({ hasError: false });
+    // Actions.home();
+  }
+
+  verifyEmail(email) {
+    var reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return reg.test(email);
+  }
+
+  clearText = () => {
+    this._textInput.setNativeProps({ text: "" });
+    this._textInput1.setNativeProps({ text: "" });
+    this._textInput2.setNativeProps({ text: "" });
+    this._textInput3.setNativeProps({ text: "" });
+    this._textInput4.setNativeProps({ text: "" });
+  };
+
+  // Metodo de insercion de data por medio del API a la BD
+
+  /**  UserRegistrationFunction = () => {
+    fetch("http://192.168.0.13/User_ProjectTesis/userRegister.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: this.state.UserName,
+     //   apellido: this.state.UserName,
+     //   correo: this.state.UserEmail,
+     //   passW: this.state.UserPassword
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // Showing response message coming from server after inserting records.
+        Alert.alert(responseJson);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+* */
+
+  //92.168.64.2  Direccion del MysqlDb
+  // 192.168.0.13 Direccion del Mac
+  UserRegistrationFunction() {
+    fetch("http://192.168.0.13/User_ProjectTesis/userRegister.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: this.state.UserName,
+
+        apellido: this.state.UserLastName,
+        correo: this.state.UserEmail,
+
+        passW: this.state.UserPassword
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // Showing response message coming from server after inserting records.
+        Alert.alert(responseJson);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  // Combinacion de las 2 funciones  en una para el boton Signup
+
+  functionCombined() {
+    //  this.signup();
+    this.UserRegistrationFunction();
+  }
+
+  // Fin de los metodos
+
+  render() {
+    const { navigate } = this.props.navigation;
+    var left = (
+      <Left style={{ flex: 1 }}>
+        <Button onPress={() => this.props.navigation.pop()}>
+          <Icon size={38} style={{ fontSize: 38 }} name="ios-arrow-back" />
+        </Button>
+      </Left>
+    );
+    var right = (
+      <Right style={{ flex: 1 }}>
+        <Button onPress={() => navigate("Cart")}>
+          <Icon size={38} style={{ fontSize: 38 }} name="ios-cart" />
+        </Button>
+      </Right>
+    );
+
+    return (
+      <Container style={{ backgroundColor: "#fdfdfd" }}>
+        <Navbar left={left} right={right} title="Sign Up" />
+
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingLeft: 50,
+              paddingRight: 50
+            }}
+          >
+            <View style={{ marginBottom: 35, width: "100%" }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  width: "100%",
+                  color: "#2c3e50"
+                }}
+              >
+                Create your account,{" "}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  textAlign: "left",
+                  width: "100%",
+                  color: "#687373"
+                }}
+              >
+                Signup to continue{" "}
+              </Text>
+            </View>
+
+            <Item>
+              <Icon active name="ios-mail" style={{ color: "#687373" }} />
+              <Input
+                placeholder="Email"
+                onChangeText={text => this.setState({ UserEmail: text })}
+                TextInput
+                placeholderTextColor="#687373"
+                ref={component => (this._textInput = component)}
+              />
+            </Item>
+
+            <Item>
+              <Icon active name="ios-man" style={{ color: "#687373" }} />
+              <Input
+                placeholder="Name"
+                onChangeText={text => this.setState({ UserName: text })}
+                placeholderTextColor="#687373"
+                ref={component => (this._textInput1 = component)}
+              />
+            </Item>
+
+            <Item>
+              <Icon active name="ios-man" style={{ color: "#687373" }} />
+              <Input
+                placeholder="LastName"
+                onChangeText={text => this.setState({ UserLastName: text })}
+                placeholderTextColor="#687373"
+                ref={component => (this._textInput2 = component)}
+              />
+            </Item>
+
+            <Item>
+              <Icon active name="ios-lock" style={{ color: "#687373" }} />
+              <Input
+                placeholder="Password"
+                onChangeText={text => this.setState({ UserPassword: text })}
+                secureTextEntry={true}
+                placeholderTextColor="#687373"
+                ref={component => (this._textInput3 = component)}
+              />
+            </Item>
+            <Item>
+              <Icon active name="ios-lock" style={{ color: "#687373" }} />
+              <Input
+                placeholder="Repeat your password"
+                onChangeText={text => this.setState({ UserRePassword: text })}
+                secureTextEntry={true}
+                placeholderTextColor="#687373"
+                ref={component => (this._textInput4 = component)}
+              />
+            </Item>
+
+            {this.state.hasError ? (
+              <Text
+                style={{
+                  color: "#c0392b",
+                  textAlign: "center",
+                  marginTop: 10
+                }}
+              >
+                {this.state.errorText}
+              </Text>
+            ) : null}
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              marginTop: 10,
+              marginBottom: 60,
+              paddingLeft: 50,
+              paddingRight: 50
+            }}
+          >
+            <Grid
+              style={{
+                marginTop: 5,
+                marginBottom: 5,
+                alignItems: "center"
+              }}
+            >
+              <Col style={{ paddingLeft: 10, paddingRight: 5 }}>
+                <Button
+                  onPress={() => this.functionCombined()}
+                  style={{ backgroundColor: "#2c3e50", marginTop: 20 }}
+                >
+                  <Text style={{ color: "#fdfdfd" }}>Signup</Text>
+                </Button>
+              </Col>
+
+              <Col style={{ paddingLeft: 5, paddingRight: 10 }}>
+                <Button
+                  onPress={this.clearText}
+                  style={{ backgroundColor: "#2c3e50", marginTop: 20 }}
+                >
+                  <Text style={{ color: "#fdfdfd" }}>Clear-All</Text>
+                </Button>
+              </Col>
+            </Grid>
+          </View>
+        </ScrollView>
+      </Container>
+    );
+  }
+}
+
+const styles = StyleSheet.create({});
+
+//make this component available to the app
+export default SignUp;
+
+---------------   Funcionamiento del servidor C Panel ---------------------------
+
+<?php
+ 
+include 'dbconfig.php';
+
+
+// Creating connection.
+$con = mysqli_connect($HostName,$HostUser,$HostPass,$DatabaseName);
+
+ if ($con->connect_error) {
+ 
+ die("Connection failed: " . $con->connect_error);
+} 
+ 
+ 
+
+$sql = "SELECT  * FROM usuario";
+
+ 
+$result = $con->query($sql);
+
+if ($result->num_rows >0) {
+
+ while($row[] = $result->fetch_assoc()) {
+ 
+ $item = $row;
+ 
+ $json = json_encode($item);
+ 
+ }
+
+} 
+
+else {
+ echo "No Results Found.";
+}
+echo $json;
+$con->close();
+ 
+?>

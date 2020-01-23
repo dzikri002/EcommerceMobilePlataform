@@ -1,0 +1,249 @@
+//import libraries
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  
+} from "react-native";
+import ListPanel from "../components/ListPanel";
+import GridProductThumb from "../components/product/GridProductThumb";
+import Grid from "../components/Grid";
+import Container from "../components/Container";
+import { SearchBar } from "react-native-elements";
+import Navbar from "../components/NavbarHeader";
+import { Right, Left, Button, Icon } from "native-base";
+
+
+// create a component
+class DetallesNegocio extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: " ",
+      data: " "
+    };
+  }
+
+  // Get all data from products acording to
+  componentDidMount() {
+    const url = `http://192.168.0.19/TesisWeb/infoProdOfCommerce.php`;
+    fetch(url)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          //dataSource: responseJson.book_array
+          // dataSource: dataN
+          data: responseJson
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  static navigationOptions = {
+    header: null,
+    title: "DetallesNegocios"
+  };
+
+  /** 
+
+
+  // Metodo de Busca de Productos
+  SearchFilter(text) {
+    const { params } = this.props.navigation.state;
+    const { items } = params.item.products;
+
+    const newData = items.filter(function(item) {
+      const itemData = item.name.toUpperCase().trim();
+
+      const textData = text.toUpperCase().trim();
+
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({
+      data: newData,
+      text: text
+    });
+  }
+
+  // Metodo que remueve el producto del search
+  deleteData() {
+    this.setState({
+      text: " ",
+      data: " "
+    });
+  }
+
+  // Metodo que renderiza la imagen del producto en la busqueda
+  _renderItem(data) {
+    const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
+    let a = data.name;
+    let b = data.prize;
+    let c = data.detail;
+    let imageUri = data.imageUri;
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => navigate("DetallesNP", { item: data })}
+        >
+          <Image
+            key={data.id}
+            style={styles.image}
+            source={{ uri: imageUri }}
+          />
+          <Text style={styles.textRimagen}>{a}</Text>
+          <Text>${b}</Text>
+          <Text>{c}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+
+*/
+
+  // Metodo que muestra todos los productos del comercio
+
+  _renderProductosList(items) {
+    const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
+    const { titulo } = data.item.nombreProducto;
+    const { descripcion } = data.item.descripcionProducto;
+
+    return (
+      <ListPanel title={titulo} description={descripcion}>
+        <Grid>
+          {items.map((item, idx) => {
+            return (
+              <GridProductThumb
+                key={idx}
+                {...item}
+                onPress={() => navigate("DetallesNP", { item: item })}
+              />
+            );
+          })}
+        </Grid>
+      </ListPanel>
+    );
+  }
+
+  render() {
+    const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
+    const { title } = this.data.nombreProducto;
+    const { summary } = this.data.descripcionProducto;
+    const { image } = this.data.imagenProducto;
+    const { items } = this.data.nombreProducto;
+    console.log("Desde DetallesN", params);
+    var left = (
+      <Left style={{ flex: 1 }}>
+        <Button onPress={() => this.props.navigation.pop()}>
+          <Icon name="arrow-back" size={38} style={{ fontSize: 38 }} />
+        </Button>
+      </Left>
+    );
+
+    var right = (
+      <Right style={{ flex: 1 }}>
+        <Button onPress={() => navigate("Cart")}>
+          <Icon name="ios-cart" size={38} style={{ fontSize: 38 }} />
+        </Button>
+      </Right>
+    );
+
+    return (
+      <Container>
+        <Navbar left={left} right={right} title="DetalleComercio" />
+
+        <Image style={styles.image} source={{ uri: image }} />
+        <Text style={styles.textTitle}>{title}</Text>
+        <Text style={styles.textSumary}>{summary}</Text>
+
+       
+
+        <ScrollView>
+          <View>
+            <FlatList
+              style={{ marginHorizontal: 5 }}
+              data={this.state.data}
+              numColumns={3}
+              columnWrapperStyle={{ marginTop: 5, marginLeft: 5 }}
+              renderItem={({ item }) => this._renderItem(item)}
+              keyExtractor={item => item.idComercioProducto}
+            />
+          </View>
+
+          <View style={styles.separator} />
+          <View>{this._renderProductosList(items)}</View>
+        </ScrollView>
+      </Container>
+    );
+  }
+}
+
+// define your styles
+
+/**    despues de summari en return 
+ *     <View>
+          <SearchBar
+            containerStyle={{
+              backgroundColor: "white",
+              borderWidth: 1,
+              borderRadius: 5
+            }}
+            value={this.state.text}
+            onChangeText={text => this.SearchFilter(text)}
+            onClear={() => {
+              this.deleteData();
+            }}
+          />
+        </View> */
+
+
+
+const styles = StyleSheet.create({
+  image: {
+    width: 330,
+    height: 170,
+    margin: 5,
+    justifyContent: "center"
+  },
+  textTitle: {
+    fontSize: 30,
+    fontWeight: "600",
+    marginLeft: 10
+  },
+  textSumary: {
+    fontSize: 20,
+    fontWeight: "300",
+    marginLeft: 10,
+    marginBottom: 10
+  },
+
+  textRimagen: {
+    fontSize: 25,
+    fontWeight: "400",
+
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 5
+  },
+  separator: {
+    height: 2,
+    backgroundColor: "#eeeeee",
+    marginTop: 10,
+    marginHorizontal: 30
+  }
+});
+
+//make this component available to the app
+export default DetallesNegocio;
