@@ -1,9 +1,9 @@
 //import libraries
 import React, { Component } from "react";
 import { Alert, AsyncStorage, Text, Image } from "react-native";
-import { Header } from "react-native-elements";
+
 import Navbar from "./NavbarHeader";
-//import { Col, Row, Grid } from "react-native-easy-grid";
+
 import {
   Container,
   Content,
@@ -34,31 +34,30 @@ class shopingCart extends Component {
     };
   }
 
-comWilm(){
-AsyncStorage.getItem("shopingCart", (err, res) => {
-  if (!res) this.setState({ cartItems: [] });
-  else this.setState({ cartItems: JSON.parse(res) });
-});
-}
+  comWilm() {
+    AsyncStorage.getItem("shopingCart", (err, res) => {
+      if (!res) this.setState({ cartItems: [] });
+      else this.setState({ cartItems: JSON.parse(res) });
+    });
+  }
 
   componentWillMount() {
-    this.comWilm()
+    this.comWilm();
 
-    this.props.navigation.addListener(
-      'willFocus',
-      () => {
-       this.comWilm();
-      }
-    )
+    this.props.navigation.addListener("willFocus", () => {
+      this.comWilm();
+    });
   }
 
   itemClicked(item) {
     Alert.alert("Trae toda la informacion del producto como un objeto ");
   }
 
+  // {item.item.precioUnidadProducto}
+
   renderItems() {
     let items = [];
-    console.log("renderI");
+
     this.state.cartItems.map((item, i) => {
       items.push(
         <ListItem
@@ -73,7 +72,7 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
           <Body style={{ paddingLeft: 10 }}>
             <Text style={{ fontSize: 18 }}>
               {item.Cantidad > 1 ? item.Cantidad + " X " : null}
-              {item.item.nombreProducto}
+              {item.nombreProducto}
             </Text>
 
             <Text
@@ -95,6 +94,16 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
             >
               {" "}
               {item.item.nombreTienda}
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 10
+              }}
+            >
+              {" "}
+              {item.item.nombreProducto}
             </Text>
           </Body>
           <Right>
@@ -125,7 +134,7 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
       [
         {
           text: "No",
-          onPress: () => console.log("No Pressed"),
+          onPress: () => console.log(""),
           style: "cancel"
         },
         { text: "Yes", onPress: () => this.removeItem(item) }
@@ -164,12 +173,12 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
   }
 
   componentDidUpdate() {
-    console.log("Didi");
+    //  console.log("componentDidUpdate");
     // Uso tipico (no olvides de comparar los props):
   }
 
   checkout() {
-    console.log("Out");
+    //  console.log("Out");
 
     this.props.navigation.navigate("CheckO", {
       cartItems: this.state.cartItems,
@@ -178,13 +187,15 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
     });
   }
 
-
   // ----------------------------------- Final metodos del renderItem-------------------------------------------------------
 
   render() {
-    console.log(
-      "Desde Carrito Compras" + this.state.dataUser + this.state.cartItems
-    );
+    // Icon name="md-business"
+    var carritoProductos = this.state.cartItems;
+    for (let i = 0; i < carritoProductos.length; i++) {
+      const element = carritoProductos[i];
+      console.log(element);
+    }
 
     var left = (
       <Left style={{ flex: 1 }}>
@@ -196,25 +207,25 @@ AsyncStorage.getItem("shopingCart", (err, res) => {
 
     var right = (
       <Right style={{ flex: 1 }}>
-        <Button onPress={() => this.props.navigation.navigate("Comercios")}>
-          <Icon name="md-business" size={38} style={{ fontSize: 38 }} />
+        <Button onPress={() => this.props.navigation.navigate("Home")}>
+          <Icon name="md-home" size={38} style={{ fontSize: 38 }} />
         </Button>
       </Right>
     );
 
     return (
       <Container style={{ backgroundColor: "#fdfdfd" }}>
-        <Navbar left={left} title="CarritoCompra" right={right} />
+        <Navbar left={left} title="Carrito" right={right} />
         {this.state.cartItems.length <= 0 ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <Icon
               name="ios-cart"
-              size={38}
-              style={{ fontSize: 38, color: "#95a5a6", marginBottom: 7 }}
+              size={55}
+              style={{ fontSize: 55, color: "#95a5a6", marginBottom: 7 }}
             />
-            <Text style={{ color: "#95a5a6" }}>Your cart is empty</Text>
+            <Text style={{ color: "#95a5a6" }}>Carrito Vacio</Text>
           </View>
         ) : (
           <Content style={{ paddingRight: 10 }}>

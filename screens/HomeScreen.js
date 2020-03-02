@@ -18,13 +18,15 @@ import GridProductThumb from "../components/product/GridProductThumb2";
 import Swiper from "../components/Swiper";
 import Grid from "../components/Grid";
 
-import promociones from "../data/promoProducData";
+//import promociones from "../data/promoProducData";
 import CarouselC from "../components/CarouselC";
 
 import SearchPromo from "../components/SearchPromoPrdt";
 var { height, width } = Dimensions.get("window");
 const initWidth = width;
 const initHeight = initWidth * (500 / 900);
+
+//<SearchPromo />
 
 // create a component
 class HomeScreen extends Component {
@@ -40,58 +42,6 @@ class HomeScreen extends Component {
     };
   }
 
-  render() {
-    return (
-      <Container>
-        <ScrollView>
-          <SearchPromo />
-          <View style={{ height: 230 }}>
-            <CarouselC />
-          </View>
-
-          <Text
-            style={{
-              fontWeight: "bold",
-              marginTop: 5,
-              marginBottom: 5,
-              fontSize: 25,
-              marginLeft: 60
-            }}
-          >
-            Promociones del dia
-          </Text>
-          <View>
-            <FlatList
-              style={{
-                marginHorizontal: 5,
-                marginTop: 5,
-                marginLeft: 5,
-                marginRight: 5
-              }}
-              data={this.state.data}
-              numColumns={3}
-              columnWrapperStyle={{
-                marginTop: 5,
-                marginLeft: 5,
-                marginRight: 5
-              }}
-              renderItem={this.renderItem}
-              keyExtractor={item => item.idProducto}
-              ItemSeparatorComponent={this.renderSeparator}
-            />
-          </View>
-        </ScrollView>
-      </Container>
-    );
-  }
-
-  /**     {this._renderPromotionsList(promociones.Comida)}
-          {this._renderPromotionsList(promociones.Ropa)} */
-
-  // Metodos
-
-  // For local host const url = `http://192.168.0.19/TesisWeb/ofertas.php`
-
   componentDidMount() {
     const url = "http://mydigitall.com/TesisAndres/ofertas.php";
     fetch(url)
@@ -106,29 +56,35 @@ class HomeScreen extends Component {
       });
   }
 
-  _renderSwiperList(data) {
-    return (
-      <ListPanel title={data.title} description={data.description}>
-        <Swiper>
-          {data.items.map((item, idx) => {
-            return <SwiperProductThumb key={idx} {...item} />;
-          })}
-        </Swiper>
-      </ListPanel>
-    );
-  }
+  // For local host const url = `http://192.168.0.19/TesisWeb/ofertas.php`
+  /**     {this._renderPromotionsList(promociones.Comida)}
+          {this._renderPromotionsList(promociones.Ropa)} */
 
-  _renderGridList(data) {
-    return (
-      <ListPanel title={data.title} description={data.description}>
-        <Grid>
-          {data.items.map((item, idx) => {
-            return <GridProductThumb key={idx} {...item} />;
-          })}
-        </Grid>
-      </ListPanel>
-    );
-  }
+  //                     METODOS DEL PROGRAMA
+
+  // _renderSwiperList(data) {
+  //   return (
+  //     <ListPanel title={data.title} description={data.description}>
+  //       <Swiper>
+  //         {data.items.map((item, idx) => {
+  //           return <SwiperProductThumb key={idx} {...item} />;
+  //         })}
+  //       </Swiper>
+  //     </ListPanel>
+  //   );
+  // }
+
+  // _renderGridList(data) {
+  //   return (
+  //     <ListPanel title={data.title} description={data.description}>
+  //       <Grid>
+  //         {data.items.map((item, idx) => {
+  //           return <GridProductThumb key={idx} {...item} />;
+  //         })}
+  //       </Grid>
+  //     </ListPanel>
+  //   );
+  // }
 
   /** Metodo que retrive la informacion de las promociones de los
 locales*/
@@ -174,6 +130,51 @@ locales*/
       <View style={{ height: 2, width: "100%", backgroundColor: "black" }} />
     );
   };
+
+  render() {
+    return (
+      <Container>
+        <ScrollView>
+          <SearchPromo navigation={this.props.navigation} />
+          <View style={{ height: 230 }}>
+            <CarouselC />
+          </View>
+
+          <Text
+            style={{
+              fontWeight: "bold",
+              marginTop: 5,
+              marginBottom: 5,
+              fontSize: 25,
+              marginLeft: 60
+            }}
+          >
+            Promociones del dia
+          </Text>
+          <View>
+            <FlatList
+              style={{
+                marginHorizontal: 5,
+                marginTop: 5,
+                marginLeft: 5,
+                marginRight: 5
+              }}
+              data={this.state.data}
+              numColumns={3}
+              columnWrapperStyle={{
+                marginTop: 5,
+                marginLeft: 5,
+                marginRight: 5
+              }}
+              renderItem={this.renderItem}
+              keyExtractor={item => item.idProducto}
+              ItemSeparatorComponent={this.renderSeparator}
+            />
+          </View>
+        </ScrollView>
+      </Container>
+    );
+  }
 }
 
 // define your styles

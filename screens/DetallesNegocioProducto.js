@@ -8,8 +8,7 @@ import {
   Image,
   ScrollView,
   ToastAndroid,
-  AsyncStorage,
-  Alert
+  AsyncStorage
 } from "react-native";
 
 import { Button, Left, Right } from "native-base";
@@ -26,8 +25,9 @@ class DetallesNegocioProducto extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      product: {},
-      quantity: 1
+      product: [],
+      quantity: 1,
+      valorDescuentoTotalP: 0
     };
   }
 
@@ -41,9 +41,13 @@ class DetallesNegocioProducto extends Component {
   componentWillMount() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
-    console.log("desdeNPr", params);
 
     this.setState({ product: params });
+    // When you need to execute a function at opening window
+
+    // this.props.navigation.addListener("willFocus", () => {
+    //   this.valorTotalDescuento();
+    // });
   }
 
   renderImages() {
@@ -62,21 +66,51 @@ class DetallesNegocioProducto extends Component {
     return images;
   }
 
+  // Calculate ValorDescuentoProducto
+
+  valorTotalDescuento() {
+    var producto = this.state.product;
+    var a = Object.values(producto.item["precioUnidadProducto"]);
+    var b = Object.values(producto.item["descuento"]);
+    var c = Object.values(producto.item["codigoOferta"]);
+    var valorActual = a.join("");
+    var valorDescuento = b.join("");
+    var codigoOferta = c.join("");
+
+    var valorTotalDescuento = 0;
+
+    if (codigoOferta == 1) {
+      valorTotalDescuento = valorActual - valorDescuento;
+    } else if (codigoOferta == 2 || codigoOferta == 3) {
+      var descuen = 0;
+      descuen = (valorActual * valorDescuento) / 100;
+      valorTotalDescuento = parseInt(descuen) + parseInt(valorActual);
+    } else {
+      descuen = valorActual * 2 * 0.33;
+      valorTotalDescuento = parseInt(descuen) + parseInt(valorActual);
+    }
+    console.log("DescuentoTotalProducto En metodo" + valorTotalDescuento);
+    //  this.setState({ valorDescuentoTotalP: valorTotalDescuento });
+
+    this.setState({ valorDescuentoTotalP: valorTotalDescuento });
+  }
+
   addToCart() {
     var product = this.state.product;
 
-    //  product["quantity"] = this.state.quantity;
     product["Cantidad"] = this.state.quantity;
-
+    product["PrecioDescuentoTotal"] = this.state.valorDescuentoTotalP;
     AsyncStorage.getItem("shopingCart", (err, res) => {
-      console.log("Desde Cart", res);
-      if (!res) AsyncStorage.setItem("shopingCart", JSON.stringify([product]));
-      else {
+      if (!res) {
+        AsyncStorage.setItem("shopingCart", JSON.stringify([product]));
+      } else {
         var items = JSON.parse(res);
+
         items.push(product);
 
         AsyncStorage.setItem("shopingCart", JSON.stringify(items));
       }
+
       ToastAndroid.show(
         "Producto adicionado al Carrito ",
         ToastAndroid.SHORT,
@@ -84,6 +118,13 @@ class DetallesNegocioProducto extends Component {
       );
     });
   }
+
+  // Ejecutar 2 Funciones
+
+  // combineFunctions() {
+  //   this.addToCart();
+  //   this.valorTotalDescuento();
+  // }
 
   render() {
     // Informacion del objeto el cual se le dio el click en DetallesNegocio
@@ -97,6 +138,13 @@ class DetallesNegocioProducto extends Component {
     const { cantidadProducto } = params.item;
     const { codigoOferta } = params.item;
     const { descuento } = params.item;
+
+    var productos = this.state.product;
+    for (let i = 0; i < productos.length; i++) {
+      const element = productos[i];
+      console.log(element);
+    }
+    console.log("El totalDescuentoRender" + this.state.valorDescuentoTotalP);
 
     // Construccion del NavHeader
 
@@ -136,19 +184,31 @@ class DetallesNegocioProducto extends Component {
             <Text style={styles.price}>$ {precioUnidadProducto}</Text>
             <Text style={styles.description}>{descripcionProducto}</Text>
             <Text style={styles.descriptionLocal}>
-              Local de Venta : {nombreTienda} {codigoOferta}
+              Local de Venta : {nombreTienda}
             </Text>
 
             <Text style={styles.descriptionLocal}>
               {codigoOferta == 1
-                ? "Promoción : Bono" 
+                ? "Tipo Promoción : Bono"
                 : codigoOferta == 2
-                ? "Promoción : Descuento"
+                ? "Tipo Promoción : Descuento"
                 : codigoOferta == 3
-                ? " Promoción : Promo 2*1"
+                ? "Tipo Promoción : Promo 2*1"
                 : codigoOferta == 4
-                ? " Promoción : Promo 3*1"
-                : "Producto no en Promoción"} {descuento}{'%'} 
+                ? "Tipo Promoción : Promo 3*1"
+                : "Producto no en Promoción - Revisar Promociones"}{" "}
+            </Text>
+            <Text style={styles.descriptionLocal}>
+              {codigoOferta == 1
+                ? "$ "
+                : codigoOferta == 2
+                ? "% "
+                : codigoOferta == 3
+                ? "% "
+                : codigoOferta == 4
+                ? "% "
+                : ""}
+              {descuento}
             </Text>
             <Text style={styles.descriptionLocal}>
               Cantidad Disponible : {cantidadProducto - this.state.quantity}

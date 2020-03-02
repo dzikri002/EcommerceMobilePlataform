@@ -4,12 +4,7 @@
 
 // React native and others libraries imports
 import React, { Component } from "react";
-import {
-  TouchableHighlight,
-  AsyncStorage,
-  ScrollView,
-  Alert
-} from "react-native";
+import { TouchableHighlight, TextInput } from "react-native";
 import {
   Container,
   Content,
@@ -29,7 +24,7 @@ import {
 import FAIcon from "react-native-vector-icons/FontAwesome";
 import Navbar from "./NavbarHeader";
 import helpers from "../helpers/helpers";
-//import { removeAll } from "../components/shopingCart";
+
 // create a component
 class Checkout extends Component {
   static navigationOptions = {
@@ -50,8 +45,12 @@ class Checkout extends Component {
       card: true,
       paypal: false,
       cash: false,
+      bitcoin: false,
+      googleWallet: false,
       passW: " ",
-      email: " "
+      email: " ",
+      radioButton: "TarjetaCredito",
+      domicilo: ""
     };
   }
 
@@ -142,6 +141,7 @@ class Checkout extends Component {
     const url = `http://mydigitall.com/TesisAndres/sessionUserCheckout.php`;
     // const { passW } = this.state;
     // const { email } = this.state;
+    // Falta colocar el metodo de pago radioButton
     const uniqueArr = [
       ...new Set(this.state.cartItems.map(data => data.item.idComercio))
     ];
@@ -194,7 +194,7 @@ class Checkout extends Component {
 
   /**--------------------------------FinalMetodos-------------------------------------- */
   render() {
-   // console.log("DesdeCheckOut El Id :", this.state.idU);
+    // console.log("DesdeCheckOut El Id :", this.state.idU);
     const { navigate } = this.props.navigation;
     // const dataUserName = this.state.dataUser.dataU.name;
     // const dataUserCorreo = this.state.dataUser.dataU.email;
@@ -206,6 +206,8 @@ class Checkout extends Component {
     ];
 
     console.log("Desde checkOutCart --", this.state.cartItems);
+    //console.log("Domicilio" + this.state.domicilo);
+    // console.log("el radioButton :", this.state.radioButton);
     // console.log("Desde checkOut--", uniqueArr);
     // console.log("Desde checkOut---", this.state.dataUser.dataU);
 
@@ -294,7 +296,7 @@ class Checkout extends Component {
                 marginLeft: 0
               }}
             >
-              <Text>Pagar con Tarjeta</Text>
+              <Text>TarjetaCredito</Text>
               <FAIcon
                 name="cc-mastercard"
                 size={20}
@@ -307,6 +309,18 @@ class Checkout extends Component {
                 color="#2980b9"
                 style={{ marginLeft: 2 }}
               />
+              <FAIcon
+                name="cc-discover"
+                size={20}
+                color="#c0392b"
+                style={{ marginLeft: 2 }}
+              />
+              <FAIcon
+                name="cc-stripe"
+                size={20}
+                color="#2980b9"
+                style={{ marginLeft: 2 }}
+              />
               <Right>
                 <Radio
                   selected={this.state.card}
@@ -314,7 +328,10 @@ class Checkout extends Component {
                     this.setState({
                       card: true,
                       paypal: false,
-                      cash: false
+                      cash: false,
+                      bitcoin: false,
+                      googleWallet: false,
+                      radioButton: "TarjetaCredito"
                     })
                   }
                 />
@@ -329,7 +346,7 @@ class Checkout extends Component {
                 borderTopWidth: 0
               }}
             >
-              <Text>Pagar con Paypal</Text>
+              <Text>Paypal</Text>
               <FAIcon
                 name="cc-paypal"
                 size={20}
@@ -343,7 +360,10 @@ class Checkout extends Component {
                     this.setState({
                       card: false,
                       paypal: true,
-                      cash: false
+                      cash: false,
+                      bitcoin: false,
+                      googleWallet: false,
+                      radioButton: "Paypal"
                     })
                   }
                 />
@@ -359,7 +379,7 @@ class Checkout extends Component {
               borderTopWidth: 0
             }}
           >
-            <Text>Pagar con Efectivo</Text>
+            <Text>Efectivo</Text>
             <FAIcon
               name="money"
               size={20}
@@ -370,11 +390,93 @@ class Checkout extends Component {
               <Radio
                 selected={this.state.cash}
                 onPress={() =>
-                  this.setState({ card: false, paypal: false, cash: true })
+                  this.setState({
+                    card: false,
+                    paypal: false,
+                    cash: true,
+                    bitcoin: false,
+                    googleWallet: false,
+                    radioButton: "Efectivo"
+                  })
                 }
               />
             </Right>
           </ListItem>
+          <ListItem
+            style={{
+              borderWidth: 1,
+              borderColor: "rgba(149, 165, 166, 0.3)",
+              paddingLeft: 10,
+              marginLeft: 0,
+              borderTopWidth: 0
+            }}
+          >
+            <Text>Bitcoin</Text>
+            <FAIcon
+              name="bitcoin"
+              size={20}
+              color="#34495e"
+              style={{ marginLeft: 7 }}
+            />
+            <Right>
+              <Radio
+                selected={this.state.bitcoin}
+                onPress={() =>
+                  this.setState({
+                    card: false,
+                    paypal: false,
+                    cash: false,
+                    bitcoin: true,
+                    googleWallet: false,
+                    radioButton: "Bitcoin"
+                  })
+                }
+              />
+            </Right>
+          </ListItem>
+          <ListItem
+            style={{
+              borderWidth: 1,
+              borderColor: "rgba(149, 165, 166, 0.3)",
+              paddingLeft: 10,
+              marginLeft: 0,
+              borderTopWidth: 0
+            }}
+          >
+            <Text>Google Wallet</Text>
+            <FAIcon
+              name="google-wallet"
+              size={20}
+              color="#34495e"
+              style={{ marginLeft: 7 }}
+            />
+            <Right>
+              <Radio
+                selected={this.state.googleWallet}
+                onPress={() =>
+                  this.setState({
+                    card: false,
+                    paypal: false,
+                    cash: false,
+                    bitcoin: false,
+                    googleWallet: true,
+                    radioButton: "googleWallet"
+                  })
+                }
+              />
+            </Right>
+          </ListItem>
+          <View style={styles.textAreaContainer}>
+            <TextInput
+              style={styles.textArea}
+              underlineColorAndroid="transparent"
+              placeholder="Escribir domicilio de entrega del producto "
+              placeholderTextColor="grey"
+              numberOfLines={3}
+              multiline={true}
+              onChangeText={text => this.setState({ domicilo: text })}
+            />
+          </View>
           <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 7 }}>
             <Button
               onPress={() => this.renderMethodsCheck()}
@@ -383,7 +485,7 @@ class Checkout extends Component {
               iconLeft
             >
               <Icon name="ios-card" />
-              <Text style={{ color: "#fdfdfd" }}>Pago</Text>
+              <Text style={{ color: "#fdfdfd" }}>Pagos</Text>
             </Button>
           </View>
           <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 7 }}>
@@ -413,6 +515,15 @@ const styles = {
     width: "100%",
     height: 1,
     backgroundColor: "#bdc3c7"
+  },
+  textAreaContainer: {
+    borderColor: "#bdc3c7",
+    borderWidth: 1,
+    padding: 5
+  },
+  textArea: {
+    height: 100,
+    justifyContent: "flex-start"
   }
 };
 //make this component available to the app

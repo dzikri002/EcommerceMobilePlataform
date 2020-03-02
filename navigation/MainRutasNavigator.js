@@ -16,6 +16,7 @@ import ProfileUsuarioActividad from "../screens/ProfileUsuarioActividad";
 import OrdenConfirmation from "../components/OrdenConfirmation";
 import FacturaUser from "../screens/FacturaUser";
 import PedidoUser from "../screens/PedidoUser";
+
 // create a component
 class MainRutasNavigator extends Component {
   static navigationOptions = {

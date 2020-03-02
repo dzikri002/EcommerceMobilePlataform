@@ -1,4 +1,3 @@
-
 //import libraries
 import React, { Component } from "react";
 import {
@@ -6,37 +5,37 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   TextInput,
   Dimensions,
   FlatList,
   ScrollView,
-  Image,
-  TouchableOpacity,
-  Alert
+  Image
 } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import { promoPrdtComercioPrdto } from "../Api_homeData/Api_homeData";
+
+//import { negocio } from "../Api_homeData/Api_homeData";
 
 const { width, height } = Dimensions.get("window");
 
 // create a component
-class SearchPromoPrdt extends Component {
+class SearchEcommerce extends Component {
   static navigationOptions = {
-    title: "SearchPromoPrdt",
+    title: "SearchOferta",
     header: null
   };
   constructor(props) {
     super(props);
     this.state = {
       text: "",
-      data: "",
-      dataO: ""
+      dataFilter: "",
+      dataOfertas: ""
     };
   }
 
-  //Data from Php file ofertas.php
-  // for local Host const url = `http://192.168.0.19/TesisWeb/ofertas.php`
+  //Data from Php file comercios.php
+  // for Local Host const url = `http://192.168.0.19/TesisWeb/comercios.php`
   componentDidMount() {
     const url = "http://mydigitall.com/TesisAndres/ofertas.php";
     fetch(url)
@@ -45,7 +44,7 @@ class SearchPromoPrdt extends Component {
         this.setState({
           //dataSource: responseJson.book_array
           // dataSource: dataN
-          dataO: responseJson
+          dataOfertas: responseJson
         });
       })
       .catch(error => {
@@ -56,19 +55,15 @@ class SearchPromoPrdt extends Component {
   // metodo de filtracion de data
 
   filter(text) {
-    const data1 = this.state.dataO;
-
-    // console.log(data1);
-
-    const newData = data1.filter(function(item, id) {
+    const data = this.state.dataOfertas;
+    const newData = data.filter(function(item) {
       const itemData = item.nombreProducto.toUpperCase().trim();
 
       const textData = text.toUpperCase().trim();
       return itemData.indexOf(textData) > -1;
     });
-
     this.setState({
-      data: newData,
+      dataFilter: newData,
       text: text
     });
   }
@@ -78,37 +73,43 @@ class SearchPromoPrdt extends Component {
   deleteData() {
     this.setState({
       text: "",
-      data: ""
+      dataFilter: ""
     });
   }
 
-  _irDeatalles() {
-    Alert.alert("Oprimido para seleccion");
-  }
-
   _renderItem(item) {
+    const { navigate } = this.props.navigation;
     return (
-      <TouchableOpacity onPress={this._irDeatalles}>
-        <Image
-          key={item.id}
-          style={styles.image}
-          source={{ uri: item.imagenProducto }}
-        />
-        <View style={styles.textCont}>
+      <TouchableOpacity
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          marginBottom: 10
+        }}
+        onPress={() => navigate("DetallesNP", { item: item })}
+      >
+        <View>
+          <Image
+            key={item.id}
+            style={styles.image}
+            source={{ uri: item.imagenProducto }}
+          />
           <Text style={{ fontWeight: "bold", fontSize: 20 }}>
             {" "}
-            {item.nombreProducto}
+            {item.nombreTienda}
           </Text>
-          <Text style={styles.textSearch}> $ {item.precioUnidadProducto}</Text>
-          <Text style={styles.textSearch}> {item.nombreTienda}</Text>
-          <Text style={styles.textSearch}> {item.descripcionProducto}</Text>
+          <Text style={{ fontSize: 15 }}>
+            {" "}
+            Precio ${item.precioUnidadProducto}
+          </Text>
+          <Text style={{ fontSize: 15 }}> Promocion {item.descuento}</Text>
+          <Text style={{ fontSize: 15 }}> {item.descripcionProducto}</Text>
         </View>
       </TouchableOpacity>
     );
   }
 
   render() {
-    console.log("El data", this.state.data);
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -122,9 +123,9 @@ class SearchPromoPrdt extends Component {
             value={this.state.text}
             onChangeText={text => this.filter(text)}
             style={styles.input}
-            placeholder="Busqueda Producto...."
+            placeholder="Search..."
             placeholderTextColor="white"
-            keyboardAppearance="default"
+            keyboardAppearance="dark"
             autoFocus={true}
           />
           {this.state.text ? (
@@ -140,7 +141,7 @@ class SearchPromoPrdt extends Component {
 
           <TouchableWithoutFeedback style={styles.cancelButton}>
             <View style={styles.containerButton}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -148,11 +149,11 @@ class SearchPromoPrdt extends Component {
         <ScrollView>
           <FlatList
             style={{ marginHorizontal: 5 }}
-            data={this.state.data}
+            data={this.state.dataFilter}
             numColumns={3}
             columnWrapperStyle={{ marginTop: 5, marginLeft: 5 }}
             renderItem={({ item }) => this._renderItem(item)}
-            keyExtractor={item => item.key}
+            keyExtractor={item => item.idProducto}
           />
         </ScrollView>
       </View>
@@ -203,17 +204,10 @@ const styles = StyleSheet.create({
   },
   image: {
     marginRight: 5,
-    width: 150,
+    width: 115,
     height: 170
-  },
-  textSearch: {
-    fontSize: 15
-  },
-  textCont: {
-    alignItems: "center",
-    position: "relative"
   }
 });
 
 //make this component available to the app
-export default SearchPromoPrdt;
+export default SearchEcommerce;

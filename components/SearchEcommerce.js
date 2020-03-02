@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   TextInput,
   Dimensions,
   FlatList,
@@ -72,19 +73,29 @@ class SearchEcommerce extends Component {
   }
 
   _renderItem(item) {
+    const { navigate } = this.props.navigation;
     return (
-      <View>
-        <Image
-          key={item.id}
-          style={styles.image}
-          source={{ uri: item.imagenComercio }}
-        />
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-          {" "}
-          {item.nombreTienda}
-        </Text>
-        <Text style={{ fontSize: 15 }}>{item.detalleComercio}</Text>
-      </View>
+      <TouchableOpacity
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          marginBottom: 10
+        }}
+        onPress={() => navigate("DetallesN", { item: item })}
+      >
+        <View>
+          <Image
+            key={item.id}
+            style={styles.image}
+            source={{ uri: item.imagenComercio }}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+            {" "}
+            {item.nombreTienda}
+          </Text>
+          <Text style={{ fontSize: 15 }}>{item.detalleComercio}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 

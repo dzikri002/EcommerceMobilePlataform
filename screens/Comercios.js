@@ -96,7 +96,7 @@ class Comercios extends Component {
       <ScrollView>
         <View>
           <Navbar right={right} title="Comercios" />
-          <SearchEC />
+          <SearchEC navigation={this.props.navigation} />
         </View>
         <View>
           <FlatList
